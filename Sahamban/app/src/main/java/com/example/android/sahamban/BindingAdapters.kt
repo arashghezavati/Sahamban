@@ -1,0 +1,52 @@
+package com.example.android.sahamban
+
+import android.view.View
+import android.widget.ImageView
+import androidx.core.net.toUri
+import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
+import com.example.android.sahamban.Network.SahambanProperty
+import com.example.android.sahamban.Overview.PhotoGridAdapter
+import com.example.android.sahamban.Overview.SahambanApiStatus
+
+@BindingAdapter("imageUrl")
+
+fun bindImage(imgView:ImageView, imgUrl:String?){
+
+    imgUrl?.let {
+        val imgUri = it.toUri().buildUpon().scheme("https").build()
+        Glide.with(imgView.context)
+            .load(imgUri)
+            .apply(RequestOptions()
+                .placeholder(R.drawable.ic_launcher_background)
+                .error(R.drawable.ic_launcher_foreground))
+            .into(imgView)
+
+    }
+}
+
+@BindingAdapter("listData")
+
+fun bindRecyclerView(recyclerView: RecyclerView, data:List<SahambanProperty>?){
+    val adapter = recyclerView.adapter as PhotoGridAdapter
+    adapter.submitList(data)
+}
+
+@BindingAdapter("SahambanApiStatus")
+fun bindStatus(statusImageView: ImageView, status: SahambanApiStatus?) {
+    when (status) {
+        SahambanApiStatus.LOADING -> {
+            statusImageView.visibility = View.VISIBLE
+            statusImageView.setImageResource(R.drawable.ic_launcher_foreground)
+        }
+        SahambanApiStatus.ERROR -> {
+            statusImageView.visibility = View.VISIBLE
+            statusImageView.setImageResource(R.drawable.ic_launcher_foreground)
+        }
+        SahambanApiStatus.DONE -> {
+            statusImageView.visibility = View.GONE
+        }
+    }
+}
